@@ -104,5 +104,10 @@ with gr.Blocks(title="Student Result Portal", css=CSS) as app:
     submit.click(calculate, inputs=[name,roll,gender,*mark_inputs,grace], outputs=[result,chart,pdf])
     gr.Markdown("*Educational demo only. Confirm your institution's official grading and grace-mark rules before formal use.*")
 
+
+
 if __name__ == "__main__":
-    app.launch()
+    app.launch(
+        server_name="0.0.0.0",
+        server_port=int(os.environ.get("PORT", "10000"))
+    )
