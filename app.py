@@ -544,10 +544,9 @@ def calculate(
         f'<p style="font-size:18px"><b>Total:</b> '
         f'{total:g}/{max_total:g} &nbsp;'
         f'<b>Percentage:</b> {pct:.2f}%</p>'
-        f'<p><b>Grade:</b> {grade} &nbsp;'
+                f'<p><b>Grade:</b> {grade} &nbsp; '
         f'<b>Distinctions:</b> '
-        f'{", ".join(html.escape(x) for x in distinctions) '
-        f'if distinctions else "None"}</p>'
+        f'{", ".join(html.escape(x) for x in distinctions) if distinctions else "None"}</p>'
         f'{f"<p><b>{html.escape(grace_note)}</b></p>" if grace_note else ""}'
         f'</div>'
     )
