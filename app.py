@@ -359,8 +359,3 @@ with gr.Blocks(title="Nahush Public High School Mohla - Student Result Portal", 
 
 if __name__ == "__main__":
     app.launch(server_name="0.0.0.0", server_port=int(os.environ.get("PORT", "10000")))
-'''
-path = Path("/mnt/data/app.py")
-path.write_text(code, encoding="utf-8")
-ast.parse(code)
-print(f"Created and syntax-checked {path} ({len(code.splitlines())} lines).")
