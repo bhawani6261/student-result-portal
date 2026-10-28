@@ -1,3 +1,4 @@
+
 import io
 import os
 import tempfile
@@ -12,137 +13,173 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import mm
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle,
-    Image as PDFImage
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    Table,
+    TableStyle,
+    Image as PDFImage,
 )
+
+# ============================================================
+# SCHOOL SETTINGS
+# ============================================================
 
 INSTITUTION_NAME = "NAHUSH PUBLIC HIGH SCHOOL MOHLA"
 INSTITUTION_TAGLINE = "Academic Excellence • Student Performance"
 
 MAX_SUBJECTS = 10
 PASS_PERCENTAGE = 33
-PASS_COLOR = "#167A43"
-FAIL_COLOR = "#B42318"
 
-# Suggested presets: verify these subjects against the school's curriculum.
+NAVY = "#17365D"
+LIGHT_BLUE = "#EAF1F8"
+MUTED_BLUE = "#61718A"
+PASS_COLOR = "#17365D"
+FAIL_COLOR = "#7A263A"
+
+# Suggested templates only.
+# Confirm subjects and maximum marks with the school's curriculum.
 CLASS_PRESETS = {
     "Class 1": [
         ("English", 100), ("Hindi", 100),
-        ("Mathematics", 100), ("EVS", 100)
+        ("Mathematics", 100), ("EVS", 100),
     ],
     "Class 2": [
         ("English", 100), ("Hindi", 100),
-        ("Mathematics", 100), ("EVS", 100)
+        ("Mathematics", 100), ("EVS", 100),
     ],
     "Class 3": [
         ("English", 100), ("Hindi", 100),
-        ("Mathematics", 100), ("EVS", 100)
+        ("Mathematics", 100), ("EVS", 100),
     ],
     "Class 4": [
         ("English", 100), ("Hindi", 100),
-        ("Mathematics", 100), ("EVS", 100)
+        ("Mathematics", 100), ("EVS", 100),
     ],
     "Class 5": [
         ("English", 100), ("Hindi", 100),
-        ("Mathematics", 100), ("EVS", 100)
+        ("Mathematics", 100), ("EVS", 100),
     ],
     "Class 6": [
-        ("English", 100), ("Hindi", 100), ("Mathematics", 100),
-        ("Science", 100), ("Social Science", 100), ("Sanskrit", 100)
+        ("English", 100), ("Hindi", 100),
+        ("Mathematics", 100), ("Science", 100),
+        ("Social Science", 100), ("Sanskrit", 100),
     ],
     "Class 7": [
-        ("English", 100), ("Hindi", 100), ("Mathematics", 100),
-        ("Science", 100), ("Social Science", 100), ("Sanskrit", 100)
+        ("English", 100), ("Hindi", 100),
+        ("Mathematics", 100), ("Science", 100),
+        ("Social Science", 100), ("Sanskrit", 100),
     ],
     "Class 8": [
-        ("English", 100), ("Hindi", 100), ("Mathematics", 100),
-        ("Science", 100), ("Social Science", 100), ("Sanskrit", 100)
+        ("English", 100), ("Hindi", 100),
+        ("Mathematics", 100), ("Science", 100),
+        ("Social Science", 100), ("Sanskrit", 100),
     ],
     "Class 9": [
-        ("English", 100), ("Hindi", 100), ("Mathematics", 100),
-        ("Science", 100), ("Social Science", 100), ("Sanskrit", 100)
+        ("English", 100), ("Hindi", 100),
+        ("Mathematics", 100), ("Science", 100),
+        ("Social Science", 100), ("Sanskrit", 100),
     ],
     "Class 10": [
-        ("English", 100), ("Hindi", 100), ("Mathematics", 100),
-        ("Science", 100), ("Social Science", 100), ("Sanskrit", 100)
+        ("English", 100), ("Hindi", 100),
+        ("Mathematics", 100), ("Science", 100),
+        ("Social Science", 100), ("Sanskrit", 100),
     ],
     "Class 11 (Science)": [
-        ("English", 100), ("Physics", 100), ("Chemistry", 100),
-        ("Mathematics", 100), ("Biology", 100)
+        ("English", 100), ("Physics", 100),
+        ("Chemistry", 100), ("Mathematics", 100),
+        ("Biology", 100),
     ],
     "Class 11 (Commerce)": [
         ("English", 100), ("Accountancy", 100),
         ("Business Studies", 100), ("Economics", 100),
-        ("Mathematics", 100)
+        ("Mathematics", 100),
     ],
     "Class 11 (Arts)": [
         ("English", 100), ("History", 100),
         ("Political Science", 100), ("Geography", 100),
-        ("Economics", 100)
+        ("Economics", 100),
     ],
     "Class 12 (Science)": [
-        ("English", 100), ("Physics", 100), ("Chemistry", 100),
-        ("Mathematics", 100), ("Biology", 100)
+        ("English", 100), ("Physics", 100),
+        ("Chemistry", 100), ("Mathematics", 100),
+        ("Biology", 100),
     ],
     "Class 12 (Commerce)": [
         ("English", 100), ("Accountancy", 100),
         ("Business Studies", 100), ("Economics", 100),
-        ("Mathematics", 100)
+        ("Mathematics", 100),
     ],
     "Class 12 (Arts)": [
         ("English", 100), ("History", 100),
         ("Political Science", 100), ("Geography", 100),
-        ("Economics", 100)
+        ("Economics", 100),
     ],
 }
 
+
+# ============================================================
+# WEB APP STYLING
+# ============================================================
+
 CSS = """
 :root {
-    --paper:#F5F3EE;
-    --ink:#202522;
-    --sage:#526B5D;
-    --bronze:#A77B46;
-    --muted:#777970;
-    --line:#D9D5CC;
+    --paper: #F4F7FB;
+    --ink: #172B4D;
+    --navy: #17365D;
+    --muted: #61718A;
+    --line: #D6E0EC;
 }
+
 .gradio-container {
-    background:var(--paper)!important;
-    color:var(--ink)!important;
-    max-width:1220px!important;
-    margin:auto!important;
+    background: var(--paper) !important;
+    color: var(--ink) !important;
+    max-width: 1240px !important;
+    margin: auto !important;
 }
+
 #hero {
-    padding:28px 30px;
-    border:1px solid var(--line);
-    border-radius:18px;
-    background:linear-gradient(135deg,#fffefa,#ebe9e1);
-    margin-bottom:18px;
+    padding: 26px 30px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: linear-gradient(135deg, #FFFFFF, #EAF1FA);
+    margin-bottom: 18px;
 }
+
 #hero h1 {
-    color:var(--ink);
-    margin:0;
-    font-size:2rem;
+    color: var(--navy);
+    margin: 0;
+    font-size: 1.9rem;
+    letter-spacing: -.025em;
 }
+
 #hero p {
-    color:var(--muted);
-    margin:8px 0 0;
-    letter-spacing:.08em;
-    font-size:.78rem;
+    color: var(--muted);
+    margin: 8px 0 0;
+    letter-spacing: .06em;
+    font-size: .8rem;
 }
+
 .panel {
-    border:1px solid var(--line)!important;
-    border-radius:16px!important;
-    background:#FFFEFA!important;
+    border: 1px solid var(--line) !important;
+    border-radius: 14px !important;
+    background: #FFFFFF !important;
 }
+
 button.primary {
-    background:var(--sage)!important;
-    border-color:var(--sage)!important;
+    background: var(--navy) !important;
+    border-color: var(--navy) !important;
 }
+
 footer {
-    display:none!important;
+    display: none !important;
 }
 """
 
+
+# ============================================================
+# GRADING
+# ============================================================
 
 def grade_for(pct):
     if pct >= 90:
@@ -160,145 +197,254 @@ def grade_for(pct):
     return "F"
 
 
+# ============================================================
+# DYNAMIC SUBJECT ROWS
+# ============================================================
+
 def preset_updates(class_level):
-    preset = CLASS_PRESETS[class_level]
+    """Update the count, parent row visibility, and preset fields."""
+    preset = CLASS_PRESETS.get(
+        class_level,
+        CLASS_PRESETS["Class 5"],
+    )
+
+    # Output order:
+    # 1. Active subject count
+    # 2. Parent row visibility for all subjects
+    # 3. Subject name, maximum marks, obtained marks for each row
     updates = [gr.update(value=len(preset))]
+
+    updates.extend(
+        gr.update(visible=(i < len(preset)))
+        for i in range(MAX_SUBJECTS)
+    )
 
     for i in range(MAX_SUBJECTS):
         if i < len(preset):
             subject, maximum = preset[i]
             updates.extend([
-                gr.update(value=subject, visible=True),
-                gr.update(value=maximum, visible=True),
-                gr.update(value=0, visible=True),
+                gr.update(value=subject),
+                gr.update(value=maximum),
+                gr.update(value=0),
             ])
         else:
             updates.extend([
-                gr.update(value=f"Subject {i + 1}", visible=False),
-                gr.update(value=100, visible=False),
-                gr.update(value=0, visible=False),
+                gr.update(value=f"Subject {i + 1}"),
+                gr.update(value=100),
+                gr.update(value=0),
             ])
 
     return updates
 
 
 def update_subject_rows(count):
-    count = max(1, min(MAX_SUBJECTS, int(count)))
-    updates = []
+    """Show only the number of subject rows selected by the user."""
+    count = max(1, min(MAX_SUBJECTS, int(count or 1)))
 
-    for i in range(MAX_SUBJECTS):
-        visible = i < count
-        updates.extend([gr.update(visible=visible)] * 3)
+    return [
+        gr.update(visible=(i < count))
+        for i in range(MAX_SUBJECTS)
+    ]
 
-    return updates
 
+# ============================================================
+# PDF WATERMARK
+# ============================================================
+
+def draw_watermark(canvas, doc):
+    """Draw a subtle school watermark and border on every PDF page."""
+    canvas.saveState()
+
+    page_width, page_height = A4
+
+    # Thin page border
+    canvas.setStrokeColor(colors.HexColor("#D9E5F2"))
+    canvas.setLineWidth(0.6)
+    canvas.roundRect(
+        8 * mm,
+        8 * mm,
+        page_width - 16 * mm,
+        page_height - 16 * mm,
+        3 * mm,
+        stroke=1,
+        fill=0,
+    )
+
+    # Pale blue diagonal watermark
+    canvas.translate(page_width / 2, page_height / 2)
+    canvas.rotate(32)
+    canvas.setFillColor(colors.HexColor("#EAF1F8"))
+    canvas.setFont("Helvetica-Bold", 23)
+    canvas.drawCentredString(0, 0, INSTITUTION_NAME)
+
+    canvas.setFont("Helvetica", 10)
+    canvas.drawCentredString(
+        0,
+        -9 * mm,
+        "ACADEMIC EXCELLENCE • STUDENT PERFORMANCE",
+    )
+
+    canvas.restoreState()
+
+
+# ============================================================
+# PDF MARKSHEET
+# ============================================================
 
 def create_pdf(
-    student, roll, gender, dob, parent_name, class_level,
-    section, session, school_address, school_contact,
-    student_photo, subject_rows, total, max_total,
-    pct, grade, status, distinctions, grace_note
+    student,
+    roll,
+    gender,
+    dob,
+    parent_name,
+    class_level,
+    section,
+    session,
+    school_address,
+    school_contact,
+    student_photo,
+    subject_rows,
+    total,
+    max_total,
+    pct,
+    grade,
+    status,
+    distinctions,
+    grace_note,
 ):
-    buff = io.BytesIO()
+    buffer = io.BytesIO()
 
     doc = SimpleDocTemplate(
-        buff,
+        buffer,
         pagesize=A4,
         rightMargin=15 * mm,
         leftMargin=15 * mm,
         topMargin=12 * mm,
-        bottomMargin=12 * mm
+        bottomMargin=12 * mm,
     )
 
     styles = getSampleStyleSheet()
 
-    styles.add(ParagraphStyle(
-        name="Institution",
-        parent=styles["Title"],
-        alignment=TA_CENTER,
-        textColor=colors.HexColor("#202522"),
-        fontSize=17,
-        leading=21,
-        spaceAfter=3
-    ))
+    styles.add(
+        ParagraphStyle(
+            name="Institution",
+            parent=styles["Title"],
+            alignment=TA_CENTER,
+            textColor=colors.HexColor(NAVY),
+            fontSize=17,
+            leading=21,
+            spaceAfter=3,
+        )
+    )
 
-    styles.add(ParagraphStyle(
-        name="Tagline",
-        parent=styles["Normal"],
-        alignment=TA_CENTER,
-        textColor=colors.HexColor("#62675F"),
-        fontSize=8,
-        leading=11,
-        spaceAfter=7
-    ))
+    styles.add(
+        ParagraphStyle(
+            name="Tagline",
+            parent=styles["Normal"],
+            alignment=TA_CENTER,
+            textColor=colors.HexColor(MUTED_BLUE),
+            fontSize=8,
+            leading=11,
+            spaceAfter=7,
+        )
+    )
 
-    styles.add(ParagraphStyle(
-        name="Small",
-        parent=styles["Normal"],
-        fontSize=8,
-        leading=10
-    ))
+    styles.add(
+        ParagraphStyle(
+            name="Small",
+            parent=styles["Normal"],
+            fontSize=8,
+            leading=10,
+        )
+    )
 
     story = [
         Paragraph(
             html.escape(INSTITUTION_NAME),
-            styles["Institution"]
+            styles["Institution"],
         ),
         Paragraph(
             html.escape(INSTITUTION_TAGLINE),
-            styles["Tagline"]
+            styles["Tagline"],
         ),
     ]
 
     address_line = " | ".join(
-        value for value in [school_address.strip(), school_contact.strip()]
-        if value
+        value.strip()
+        for value in [school_address or "", school_contact or ""]
+        if value.strip()
     )
 
     if address_line:
         story.append(
-            Paragraph(html.escape(address_line), styles["Small"])
+            Paragraph(
+                html.escape(address_line),
+                styles["Small"],
+            )
         )
 
     story.extend([
         Spacer(1, 3 * mm),
         Paragraph("STUDENT REPORT CARD", styles["Heading1"]),
-        Spacer(1, 2 * mm)
+        Spacer(1, 2 * mm),
     ])
 
+    # Optional student photograph
     if student_photo and os.path.isfile(student_photo):
         try:
             photo = PDFImage(
                 student_photo,
                 width=25 * mm,
-                height=29 * mm
+                height=29 * mm,
             )
             photo.hAlign = "RIGHT"
             story.extend([photo, Spacer(1, 2 * mm)])
         except Exception:
+            # A bad or unsupported photo should not block the marksheet.
             pass
 
     student_info = [
-        ["Student Name", html.escape(student),
-         "Roll Number", html.escape(roll)],
-        ["Father / Mother", html.escape(parent_name or "—"),
-         "Date of Birth", html.escape(dob or "—")],
-        ["Class", html.escape(class_level),
-         "Section", html.escape(section or "—")],
-        ["Academic Session", html.escape(session or "—"),
-         "Gender", html.escape(gender or "—")],
-        ["Issue Date", datetime.now().strftime("%d %b %Y"), "", ""],
+        [
+            "Student Name",
+            html.escape(student),
+            "Roll Number",
+            html.escape(roll),
+        ],
+        [
+            "Father / Mother",
+            html.escape(parent_name or "—"),
+            "Date of Birth",
+            html.escape(dob or "—"),
+        ],
+        [
+            "Class",
+            html.escape(class_level),
+            "Section",
+            html.escape(section or "—"),
+        ],
+        [
+            "Academic Session",
+            html.escape(session or "—"),
+            "Gender",
+            html.escape(gender or "—"),
+        ],
+        [
+            "Issue Date",
+            datetime.now().strftime("%d %b %Y"),
+            "",
+            "",
+        ],
     ]
 
     info_table = Table(
         student_info,
-        colWidths=[30 * mm, 53 * mm, 30 * mm, 53 * mm]
+        colWidths=[30 * mm, 53 * mm, 30 * mm, 53 * mm],
     )
 
     info_table.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (0, -1), colors.HexColor("#E9E7DF")),
-        ("BACKGROUND", (2, 0), (2, -1), colors.HexColor("#E9E7DF")),
-        ("GRID", (0, 0), (-1, -1), 0.45, colors.HexColor("#C9C5BB")),
+        ("BACKGROUND", (0, 0), (0, -1), colors.HexColor(LIGHT_BLUE)),
+        ("BACKGROUND", (2, 0), (2, -1), colors.HexColor(LIGHT_BLUE)),
+        ("GRID", (0, 0), (-1, -1), 0.45, colors.HexColor("#D2DCE8")),
         ("FONTSIZE", (0, 0), (-1, -1), 8),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("TOPPADDING", (0, 0), (-1, -1), 6),
@@ -308,75 +454,84 @@ def create_pdf(
     story.extend([
         info_table,
         Spacer(1, 5 * mm),
-        Paragraph("Subject-wise Performance", styles["Heading2"])
+        Paragraph("Subject-wise Performance", styles["Heading2"]),
     ])
 
-    rows = [[
-        "Subject", "Maximum Marks", "Marks Obtained",
-        "Percentage", "Status"
+    marks_rows = [[
+        "Subject",
+        "Maximum Marks",
+        "Marks Obtained",
+        "Percentage",
+        "Status",
     ]]
 
     for subject, maximum, mark in subject_rows:
         subject_pct = mark / maximum * 100
-        rows.append([
+
+        marks_rows.append([
             html.escape(subject),
             f"{maximum:g}",
             f"{mark:g}",
             f"{subject_pct:.1f}%",
-            "Pass" if subject_pct >= PASS_PERCENTAGE
-            else "Needs Improvement"
+            "Pass" if subject_pct >= PASS_PERCENTAGE else "Needs Improvement",
         ])
 
-    rows.append([
+    marks_rows.append([
         "TOTAL",
         f"{max_total:g}",
         f"{total:g}",
         f"{pct:.2f}%",
-        ""
+        "",
     ])
 
     marks_table = Table(
-        rows,
+        marks_rows,
         colWidths=[48 * mm, 28 * mm, 28 * mm, 25 * mm, 37 * mm],
-        repeatRows=1
+        repeatRows=1,
     )
 
     marks_table.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#344A3E")),
+        ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor(NAVY)),
         ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
-        ("BACKGROUND", (0, -1), (-1, -1), colors.HexColor("#E9E7DF")),
-        ("GRID", (0, 0), (-1, -1), 0.45, colors.HexColor("#C9C5BB")),
+        ("BACKGROUND", (0, -1), (-1, -1), colors.HexColor(LIGHT_BLUE)),
+        ("GRID", (0, 0), (-1, -1), 0.45, colors.HexColor("#D2DCE8")),
         ("FONTSIZE", (0, 0), (-1, -1), 7.5),
         ("ALIGN", (1, 1), (-1, -1), "CENTER"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("TOPPADDING", (0, 0), (-1, -1), 6),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 6),
+        ("TEXTCOLOR", (1, 1), (-1, -2), colors.HexColor("#172B4D")),
     ]))
 
     story.extend([
         marks_table,
         Spacer(1, 5 * mm),
-        Paragraph("Final Summary", styles["Heading2"])
+        Paragraph("Final Summary", styles["Heading2"]),
     ])
 
-    summary = Table([
-        ["Total Marks", f"{total:g} / {max_total:g}"],
-        ["Percentage", f"{pct:.2f}%"],
-        ["Grade", grade],
-        ["Overall Result", status],
+    summary = Table(
         [
-            "Distinction Subjects (85%+)",
-            ", ".join(distinctions) if distinctions else "None"
+            ["Total Marks", f"{total:g} / {max_total:g}"],
+            ["Percentage", f"{pct:.2f}%"],
+            ["Grade", grade],
+            ["Overall Result", status],
+            [
+                "Distinction Subjects (85%+)",
+                ", ".join(distinctions) if distinctions else "None",
+            ],
         ],
-    ], colWidths=[55 * mm, 111 * mm])
+        colWidths=[55 * mm, 111 * mm],
+    )
 
     summary.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (0, -1), colors.HexColor("#E9E7DF")),
+        ("BACKGROUND", (0, 0), (0, -1), colors.HexColor(LIGHT_BLUE)),
         (
-            "TEXTCOLOR", (1, 3), (1, 3),
-            colors.HexColor(PASS_COLOR if status == "PASS" else FAIL_COLOR)
+            "TEXTCOLOR",
+            (1, 3),
+            (1, 3),
+            colors.HexColor(PASS_COLOR if status == "PASS" else FAIL_COLOR),
         ),
-        ("GRID", (0, 0), (-1, -1), 0.45, colors.HexColor("#C9C5BB")),
+        ("GRID", (0, 0), (-1, -1), 0.45, colors.HexColor("#D2DCE8")),
         ("FONTSIZE", (0, 0), (-1, -1), 8.5),
         ("TOPPADDING", (0, 0), (-1, -1), 7),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 7),
@@ -389,68 +544,106 @@ def create_pdf(
             Paragraph(html.escape(grace_note), styles["Small"])
         )
 
-    signature_table = Table([
-        ["____________________________", "____________________________"],
-        ["Class Teacher Signature", "Principal Signature"]
-    ], colWidths=[83 * mm, 83 * mm])
-
-    signature_table.setStyle(TableStyle([
-        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
-        ("FONTSIZE", (0, 0), (-1, -1), 8),
-        ("TOPPADDING", (0, 0), (-1, -1), 5),
-    ]))
-
     story.extend([
         Spacer(1, 13 * mm),
-        signature_table,
+        Table(
+            [
+                ["____________________________", "____________________________"],
+                ["Class Teacher Signature", "Principal Signature"],
+            ],
+            colWidths=[83 * mm, 83 * mm],
+            style=TableStyle([
+                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                ("FONTSIZE", (0, 0), (-1, -1), 8),
+                ("TOPPADDING", (0, 0), (-1, -1), 5),
+            ]),
+        ),
         Spacer(1, 5 * mm),
         Paragraph(
             "For official use, verify the school's approved subjects, "
             "grading and grace-mark policy.",
-            styles["Italic"]
-        )
+            styles["Italic"],
+        ),
     ])
 
-    doc.build(story)
-    buff.seek(0)
-    return buff.getvalue()
+    doc.build(
+        story,
+        onFirstPage=draw_watermark,
+        onLaterPages=draw_watermark,
+    )
 
+    buffer.seek(0)
+    return buffer.getvalue()
+
+
+# ============================================================
+# CALCULATE RESULT, CHART, AND PDF
+# ============================================================
 
 def calculate(
-    student, roll, gender, dob, parent_name, class_level,
-    section, session, school_address, school_contact,
-    student_photo, active_count, grace_enabled, grace_allowance,
-    *values
+    student,
+    roll,
+    gender,
+    dob,
+    parent_name,
+    class_level,
+    section,
+    session,
+    school_address,
+    school_contact,
+    student_photo,
+    active_count,
+    grace_enabled,
+    grace_allowance,
+    *values,
 ):
-    if not student or not student.strip():
+    student = (student or "").strip()
+    roll = (roll or "").strip()
+
+    if not student:
         raise gr.Error("Please enter the student's name.")
 
-    if not roll or not roll.strip():
+    if not roll:
         raise gr.Error("Please enter the roll number.")
 
-    if (
-        grace_allowance is None
-        or float(grace_allowance) < 0
-        or float(grace_allowance) > PASS_PERCENTAGE
-    ):
-        raise gr.Error("Grace allowance must be between 0 and 33.")
+    try:
+        allowance = float(grace_allowance or 0)
+    except (TypeError, ValueError):
+        raise gr.Error("Please enter a valid grace allowance.")
+
+    if allowance < 0 or allowance > PASS_PERCENTAGE:
+        raise gr.Error(
+            "Grace allowance must be between 0 and 33 percentage points."
+        )
+
+    try:
+        count = int(active_count)
+    except (TypeError, ValueError):
+        raise gr.Error("Please select a valid number of subjects.")
+
+    if count < 1 or count > MAX_SUBJECTS:
+        raise gr.Error("The number of subjects must be between 1 and 10.")
 
     subject_rows = []
 
-    for i in range(int(active_count)):
+    for i in range(count):
         subject = str(values[i * 3] or "").strip()
-        maximum = values[i * 3 + 1]
-        mark = float(values[i * 3 + 2] or 0)
+        maximum_value = values[i * 3 + 1]
+        mark_value = values[i * 3 + 2]
 
         if not subject:
             raise gr.Error(f"Please enter a name for subject {i + 1}.")
 
-        if maximum is None or float(maximum) <= 0:
+        try:
+            maximum = float(maximum_value)
+            mark = float(mark_value or 0)
+        except (TypeError, ValueError):
+            raise gr.Error(f"Enter valid marks for {subject}.")
+
+        if maximum <= 0:
             raise gr.Error(
                 f"Maximum marks for {subject} must be greater than zero."
             )
-
-        maximum = float(maximum)
 
         if mark < 0 or mark > maximum:
             raise gr.Error(
@@ -463,109 +656,157 @@ def calculate(
     total = sum(row[2] for row in subject_rows)
     pct = total / max_total * 100 if max_total else 0
 
+    # A subject fails if its percentage is below the configured pass mark.
     fails = [
-        i for i, (_, maximum, mark) in enumerate(subject_rows)
-        if mark / maximum * 100 < PASS_PERCENTAGE
+        i
+        for i, (_, maximum, mark) in enumerate(subject_rows)
+        if (mark / maximum * 100) < PASS_PERCENTAGE
     ]
 
-    allowance = float(grace_allowance or 0)
+    # Grace is applied only when enabled, the allowance is positive,
+    # and exactly one subject is within the allowed percentage-point range.
+    grace_used = False
 
-    grace_used = bool(
-        grace_enabled
-        and allowance > 0
-        and len(fails) == 1
-        and PASS_PERCENTAGE - allowance
-        <= subject_rows[fails[0]][2] / subject_rows[fails[0]][1] * 100
-        < PASS_PERCENTAGE
-    )
+    if grace_enabled and allowance > 0 and len(fails) == 1:
+        failed_index = fails[0]
+        _, failed_maximum, failed_mark = subject_rows[failed_index]
+        failed_pct = failed_mark / failed_maximum * 100
+
+        grace_used = (
+            PASS_PERCENTAGE - allowance
+            <= failed_pct
+            < PASS_PERCENTAGE
+        )
 
     passed = len(fails) == 0 or grace_used
     status = "PASS" if passed else "FAIL"
     grade = grade_for(pct) if passed else "F"
 
     distinctions = [
-        subject for subject, maximum, mark in subject_rows
+        subject
+        for subject, maximum, mark in subject_rows
         if mark / maximum * 100 >= 85
     ]
 
     grace_note = (
         "Grace pass applied using the configured demo allowance. "
         "Confirm this matches school policy."
-        if grace_used else ""
+        if grace_used
+        else ""
     )
 
+    # Subject performance chart
     subjects = [row[0] for row in subject_rows]
-    percentages = [row[2] / row[1] * 100 for row in subject_rows]
+    percentages = [
+        row[2] / row[1] * 100
+        for row in subject_rows
+    ]
 
-    fig = go.Figure(go.Bar(
-        x=subjects,
-        y=percentages,
-        text=[f"{p:.1f}%" for p in percentages],
-        textposition="outside",
-        marker_color=[
-            "#A77B46" if p >= 85 else "#526B5D"
-            for p in percentages
-        ],
-        hovertemplate="%{x}: %{y:.1f}%<extra></extra>"
-    ))
+    fig = go.Figure(
+        go.Bar(
+            x=subjects,
+            y=percentages,
+            text=[f"{value:.1f}%" for value in percentages],
+            textposition="outside",
+            marker_color=[
+                "#17365D" if value >= 85 else "#7B9BC2"
+                for value in percentages
+            ],
+            hovertemplate="%{x}: %{y:.1f}%<extra></extra>",
+        )
+    )
 
     fig.update_layout(
         title="Subject Performance Overview",
         yaxis=dict(
             title="Marks (% of maximum)",
             range=[0, 110],
-            dtick=20
+            dtick=20,
         ),
         template="plotly_white",
         height=390,
-        paper_bgcolor="#FFFEFA",
-        plot_bgcolor="#FFFEFA",
-        font=dict(color="#202522"),
-        margin=dict(l=20, r=20, t=55, b=75)
+        paper_bgcolor="#FFFFFF",
+        plot_bgcolor="#FFFFFF",
+        font=dict(color="#172B4D"),
+        margin=dict(l=20, r=20, t=55, b=75),
+    )
+
+    # Escape user-entered text before inserting it into HTML.
+    safe_student = html.escape(student)
+    safe_roll = html.escape(roll)
+    safe_class = html.escape(class_level or "")
+    safe_section = html.escape(section or "—")
+    distinction_text = (
+        ", ".join(html.escape(item) for item in distinctions)
+        if distinctions
+        else "None"
     )
 
     status_color = PASS_COLOR if passed else FAIL_COLOR
-    status_bg = "#E8F6ED" if passed else "#FDECEC"
+    status_bg = "#EAF1F8" if passed else "#F9ECEF"
+
+    grace_html = (
+        f"<p><b>{html.escape(grace_note)}</b></p>"
+        if grace_note
+        else ""
+    )
 
     result_html = (
         f'<div style="border:2px solid {status_color};'
-        f'border-left:10px solid {status_color};padding:20px;'
-        f'background:{status_bg};border-radius:14px;color:#202522">'
+        f'border-left:8px solid {status_color};'
+        f'padding:20px;background:{status_bg};border-radius:12px;'
+        f'color:#172B4D">'
         f'<div style="display:inline-block;background:{status_color};'
-        f'color:#fff;padding:10px 28px;border-radius:999px;'
-        f'font-size:25px;font-weight:900;letter-spacing:1.5px;'
+        f'color:#fff;padding:10px 28px;border-radius:5px;'
+        f'font-size:24px;font-weight:800;letter-spacing:1px;'
         f'margin-bottom:12px">{status}</div>'
-        f'<h3 style="margin:3px 0 10px;color:#202522">'
-        f'{html.escape(student)} '
+        f'<h3 style="margin:3px 0 10px;color:#172B4D">'
+        f'{safe_student} '
         f'<span style="font-size:14px;font-weight:500">'
-        f'| Roll No: {html.escape(roll)}</span></h3>'
-        f'<p><b>Class:</b> {html.escape(class_level)} &nbsp;'
-        f'<b>Section:</b> {html.escape(section or "—")}</p>'
+        f'| Roll No: {safe_roll}</span></h3>'
+        f'<p><b>Class:</b> {safe_class} &nbsp; '
+        f'<b>Section:</b> {safe_section}</p>'
         f'<p style="font-size:18px"><b>Total:</b> '
-        f'{total:g}/{max_total:g} &nbsp;'
+        f'{total:g}/{max_total:g} &nbsp; '
         f'<b>Percentage:</b> {pct:.2f}%</p>'
-                f'<p><b>Grade:</b> {grade} &nbsp; '
-        f'<b>Distinctions:</b> '
-        f'{", ".join(html.escape(x) for x in distinctions) if distinctions else "None"}</p>'
-        f'{f"<p><b>{html.escape(grace_note)}</b></p>" if grace_note else ""}'
-        f'</div>'
+        f'<p><b>Grade:</b> {grade} &nbsp; '
+        f'<b>Distinctions:</b> {distinction_text}</p>'
+        f'{grace_html}</div>'
     )
 
+    # Create the PDF file.
     pdf_bytes = create_pdf(
-        student.strip(), roll.strip(), gender, dob, parent_name,
-        class_level, section, session, school_address, school_contact,
-        student_photo, subject_rows, total, max_total, pct,
-        grade, status, distinctions, grace_note
+        student,
+        roll,
+        gender,
+        dob,
+        parent_name,
+        class_level,
+        section,
+        session,
+        school_address,
+        school_contact,
+        student_photo,
+        subject_rows,
+        total,
+        max_total,
+        pct,
+        grade,
+        status,
+        distinctions,
+        grace_note,
     )
 
-    safe_roll = "".join(
-        ch if ch.isalnum() or ch in "-_" else "_"
-        for ch in roll.strip()
-    )
+    safe_filename_roll = "".join(
+        char if char.isalnum() or char in "-_" else "_"
+        for char in roll
+    ) or "student"
 
+    # Unique filename helps prevent collisions between repeated submissions.
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
     pdf_path = os.path.join(
         tempfile.gettempdir(),
-        f"marksheet_{safe_roll}.pdf"
+        f"marksheet_{safe_filename_roll}_{timestamp}.pdf",
     )
 
     with open(pdf_path, "wb") as file:
@@ -574,13 +815,19 @@ def calculate(
     return result_html, fig, pdf_path
 
 
+# ============================================================
+# GRADIO INTERFACE
+# ============================================================
+
 with gr.Blocks(
     title="Nahush Public High School Mohla - Student Result Portal"
 ) as app:
 
     gr.HTML(
-        f'<div id="hero"><h1>{html.escape(INSTITUTION_NAME)}</h1>'
-        f'<p>{html.escape(INSTITUTION_TAGLINE)}</p></div>'
+        f'<div id="hero">'
+        f'<h1>{html.escape(INSTITUTION_NAME)}</h1>'
+        f'<p>{html.escape(INSTITUTION_TAGLINE)}</p>'
+        f'</div>'
     )
 
     gr.Markdown(
@@ -589,6 +836,10 @@ with gr.Blocks(
     )
 
     with gr.Row():
+
+        # ----------------------------------------------------
+        # LEFT COLUMN: STUDENT INFORMATION AND SUBJECT MARKS
+        # ----------------------------------------------------
         with gr.Column(scale=1):
 
             with gr.Group(elem_classes=["panel"]):
@@ -596,102 +847,116 @@ with gr.Blocks(
 
                 student = gr.Textbox(
                     label="Student Name",
-                    placeholder="Enter student's full name"
+                    placeholder="Enter student's full name",
                 )
 
                 roll = gr.Textbox(
                     label="Roll Number",
-                    placeholder="Enter roll number"
+                    placeholder="Enter roll number",
                 )
 
                 gender = gr.Dropdown(
-                    ["Female", "Male", "Other", "Prefer not to say"],
+                    [
+                        "Female",
+                        "Male",
+                        "Other",
+                        "Prefer not to say",
+                    ],
                     label="Gender",
-                    value="Prefer not to say"
+                    value="Prefer not to say",
                 )
 
                 dob = gr.Textbox(
                     label="Date of Birth",
-                    placeholder="e.g. 23/03/2012"
+                    placeholder="e.g. 23/03/2012",
                 )
 
                 parent_name = gr.Textbox(
                     label="Father / Mother Name",
-                    placeholder="Enter parent/guardian name"
+                    placeholder="Enter parent/guardian name",
                 )
 
                 class_level = gr.Dropdown(
                     list(CLASS_PRESETS.keys()),
                     label="Class / Stream",
-                    value="Class 5"
+                    value="Class 5",
                 )
 
                 with gr.Row():
                     section = gr.Textbox(
                         label="Class / Section",
-                        placeholder="e.g. A"
+                        placeholder="e.g. A",
                     )
 
                     session = gr.Textbox(
                         label="Academic Session",
-                        placeholder="e.g. 2026-27"
+                        placeholder="e.g. 2026-27",
                     )
 
                 school_address = gr.Textbox(
                     label="School Address",
-                    placeholder="Enter school address"
+                    placeholder="Enter school address",
                 )
 
                 school_contact = gr.Textbox(
                     label="School Contact",
-                    placeholder="Phone / email"
+                    placeholder="Phone / email",
                 )
 
                 student_photo = gr.Image(
                     label="Student Photo (optional)",
                     type="filepath",
-                    height=180
+                    height=180,
                 )
 
             with gr.Group(elem_classes=["panel"]):
                 gr.Markdown("### Subject Marks")
 
                 gr.Markdown(
-                    "Choose a class preset, then edit subject names "
-                    "and maximum marks if required."
+                    "Choose a class preset, then review or edit the "
+                    "subject names and marks before generating the result."
                 )
 
                 active_count = gr.Slider(
                     minimum=1,
                     maximum=MAX_SUBJECTS,
                     step=1,
-                    value=4,
-                    label="Number of subjects"
+                    value=len(CLASS_PRESETS["Class 5"]),
+                    label="Number of subjects",
                 )
 
                 grace_enabled = gr.Checkbox(
                     label="Enable grace marks option",
-                    value=True
+                    value=False,
                 )
 
                 grace_allowance = gr.Number(
-                    label="Grace allowance (percentage points)",
+                    label=(
+                        "Grace allowance (percentage points; "
+                        "set according to school policy)"
+                    ),
                     value=0,
                     minimum=0,
                     maximum=33,
-                    precision=1
+                    precision=1,
                 )
 
                 gr.Markdown(
-                    "Pass mark is currently 33% per subject. "
-                    "Verify the school's official rules."
+                    "Pass mark is currently set to 33% per subject. "
+                    "Confirm this against the school's approved rules."
                 )
 
                 subject_controls = []
+                subject_row_components = []
                 default_subjects = CLASS_PRESETS["Class 5"]
 
                 for i in range(MAX_SUBJECTS):
-                    with gr.Row(visible=(i < len(default_subjects))):
+                    subject_row = gr.Row(
+                        visible=(i < len(default_subjects))
+                    )
+                    subject_row_components.append(subject_row)
+
+                    with subject_row:
                         subject_box = gr.Textbox(
                             label=f"Subject {i + 1}",
                             value=(
@@ -699,15 +964,19 @@ with gr.Blocks(
                                 if i < len(default_subjects)
                                 else f"Subject {i + 1}"
                             ),
-                            scale=3
+                            scale=3,
                         )
 
                         max_box = gr.Number(
                             label="Maximum",
-                            value=100,
+                            value=(
+                                default_subjects[i][1]
+                                if i < len(default_subjects)
+                                else 100
+                            ),
                             minimum=1,
                             precision=0,
-                            scale=1
+                            scale=1,
                         )
 
                         mark_box = gr.Number(
@@ -715,64 +984,93 @@ with gr.Blocks(
                             value=0,
                             minimum=0,
                             precision=1,
-                            scale=1
+                            scale=1,
                         )
 
                     subject_controls.extend([
-                        subject_box, max_box, mark_box
+                        subject_box,
+                        max_box,
+                        mark_box,
                     ])
 
                 submit = gr.Button(
                     "Generate Result & PDF Marksheet",
-                    variant="primary"
+                    variant="primary",
                 )
 
+        # ----------------------------------------------------
+        # RIGHT COLUMN: RESULT, CHART, PDF
+        # ----------------------------------------------------
         with gr.Column(scale=1):
             result = gr.HTML(label="Result Summary")
             chart = gr.Plot(label="Performance Chart")
             pdf = gr.File(label="Download PDF Report Card")
 
-    class_outputs = [active_count]
-
-    for i in range(MAX_SUBJECTS):
-        class_outputs.extend(subject_controls[i * 3:i * 3 + 3])
+    # --------------------------------------------------------
+    # CLASS PRESET EVENT
+    # Outputs: count + parent rows + all subject input fields
+    # --------------------------------------------------------
+    class_outputs = [
+        active_count,
+        *subject_row_components,
+        *subject_controls,
+    ]
 
     class_level.change(
-        preset_updates,
+        fn=preset_updates,
         inputs=[class_level],
-        outputs=class_outputs
+        outputs=class_outputs,
     )
 
-    count_outputs = []
-
-    for i in range(MAX_SUBJECTS):
-        count_outputs.extend(subject_controls[i * 3:i * 3 + 3])
-
+    # --------------------------------------------------------
+    # MANUAL SUBJECT COUNT EVENT
+    # Only parent row visibility changes here.
+    # --------------------------------------------------------
     active_count.change(
-        update_subject_rows,
+        fn=update_subject_rows,
         inputs=[active_count],
-        outputs=count_outputs
+        outputs=subject_row_components,
     )
 
+    # --------------------------------------------------------
+    # GENERATE RESULT EVENT
+    # --------------------------------------------------------
     submit.click(
-        calculate,
+        fn=calculate,
         inputs=[
-            student, roll, gender, dob, parent_name,
-            class_level, section, session, school_address,
-            school_contact, student_photo, active_count,
-            grace_enabled, grace_allowance, *subject_controls
+            student,
+            roll,
+            gender,
+            dob,
+            parent_name,
+            class_level,
+            section,
+            session,
+            school_address,
+            school_contact,
+            student_photo,
+            active_count,
+            grace_enabled,
+            grace_allowance,
+            *subject_controls,
         ],
-        outputs=[result, chart, pdf]
+        outputs=[result, chart, pdf],
     )
 
     gr.Markdown(
-        "*Educational report-card demo. Confirm the school's official "
-        "subjects, grading and grace-mark policy before formal use.*"
+        "*School report-card demo. Subject presets are suggested templates. "
+        "Verify subjects, maximum marks, grading, pass criteria and grace "
+        "policy against the school's official requirements before formal use.*"
     )
 
+
+# ============================================================
+# RENDER DEPLOYMENT
+# ============================================================
 
 if __name__ == "__main__":
     app.launch(
         server_name="0.0.0.0",
-        server_port=int(os.environ.get("PORT", "10000"))
+        server_port=int(os.environ.get("PORT", "10000")),
+        css=CSS,
     )
