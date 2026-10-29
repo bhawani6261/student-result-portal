@@ -1107,5 +1107,4 @@ if __name__ == "__main__":
         server_port=int(os.environ.get("PORT", "10000")),
         css=CSS,
     )
-,
-    )
+    
